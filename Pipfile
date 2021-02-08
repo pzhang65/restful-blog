@@ -13,6 +13,7 @@ flask-script = "*"
 marshmallow = "*"
 flask-bcrypt = "*"
 pyjwt = "*"
+pytz = "*"
 
 [dev-packages]
 
