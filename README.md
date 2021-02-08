@@ -1,6 +1,7 @@
-# Simple RESTful blog API
+# Simple RESTful blog
 
 Learning how to create a simple RESTful blog in Python with Flask.
+Starting with the back-end API only!
 
 Things I'll be exploring:
 * pipenv + setting environment variables*
