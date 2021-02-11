@@ -9,5 +9,5 @@ db = SQLAlchemy()
 # intialize bcrpyt for use in user-model.py
 bcrypt = Bcrypt()
 
-#from .BlogpostModel import BlogpostModel, BlogpostSchema
-from .UserModel import *
+#from .blogpostmodel import *
+from .usermodel import *
