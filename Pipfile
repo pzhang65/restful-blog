@@ -12,7 +12,7 @@ flask-migrate = "*"
 flask-script = "*"
 marshmallow = "*"
 flask-bcrypt = "*"
-pyjwt = "*"
+pyjwt = "==1.7.1"
 pytz = "*"
 
 [dev-packages]

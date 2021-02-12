@@ -1,4 +1,4 @@
-#src/shared/Authentication
+#src/auth
 import jwt
 import os
 import datetime
@@ -8,25 +8,27 @@ from .models.usermodel import UserModel as um
 
 
 class Auth():
-
+    """
+    Generates JWT token with user_id, current time and expiry time for use later
+    """
     @staticmethod
     def generate_token(user_id):
-    try:
-        payload = {
-            #time using timezone attribute from UserModel
-            'exp': datetime.now(um.tz) + datetime.timedelta(days=1),
-            'iat': datetime.now(um.tz),
-            'sub': user_id
-        }
-        return jwt.encode(
-            payload,
-            os.getenv('JWT_SECRET_KEY'),
-            'HS256'
-        ).decode("utf-8")
+        try:
+            payload = {
+                #time using timezone attribute from UserModel
+                'exp': datetime.datetime.now(um.tz) + datetime.timedelta(days=3),
+                'iat': datetime.datetime.now(um.tz),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                os.getenv('JWT_SECRET_KEY'),
+                'HS256'
+            ).decode('utf-8')
         except Exception as e:
             return Response(
                 mimetype="application/json",
-                response=json.dumps({'error': 'error generating jwt token'}),
+                response=json.dumps({'error': 'error generating jwt token' +str(e)}),
                 status=400
             )
 
@@ -47,7 +49,7 @@ class Auth():
     # decorator
     @staticmethod
     def auth_required(func):
-
+        # Wraps keeps docstrings/name of the function we use @auth_required decorator over it
         @wraps(func)
         def decorated_auth(*args, **kwargs):
             if 'api-token' not in request.headers:

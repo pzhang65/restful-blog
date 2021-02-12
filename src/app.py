@@ -4,7 +4,7 @@ from flask import Flask
 
 from .config import app_config
 from .models import db, bcrypt
-
+from .views.userview import user_api as user_bp
 def create_app(env_name):
 
     app = Flask(__name__)
@@ -14,6 +14,8 @@ def create_app(env_name):
     bcrypt.init_app(app)
     #wrapping SQLalchemy object with flask app object
     db.init_app(app)
+    #Registering new user_api
+    app.register_blueprint(user_bp, url_prefix='/api/users')
 
     @app.route('/', methods=['GET'])
     def index():
