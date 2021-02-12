@@ -14,9 +14,8 @@ class UserModel(db.Model):
 
     # declaring column names
     id = db.Column(db.Integer, primary_key=True) #id primary key
-    # nullable means something must be returned from POST
     # request will return none when returning that object doesn't exist
-    name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False) # nullable false something must be returned from POST
     #Candiate key but not chosen as primary therefore alternate key!
     email = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=True)
@@ -71,14 +70,13 @@ class UserModel(db.Model):
     def __generate_hash(self, password):
         return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
 
-    # add this new method
+    # private method to check hashed password in db
     def check_hash(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
 
     def __repr__(self):
         return f'<id {self.id}>'
-
 
 
 class UserSchema(Schema):

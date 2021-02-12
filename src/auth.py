@@ -1,4 +1,4 @@
-#src/shared/Authentication
+#src/auth
 import jwt
 import os
 import datetime
@@ -16,7 +16,7 @@ class Auth():
         try:
             payload = {
                 #time using timezone attribute from UserModel
-                'exp': datetime.datetime.now(um.tz) + datetime.timedelta(days=1),
+                'exp': datetime.datetime.now(um.tz) + datetime.timedelta(days=3),
                 'iat': datetime.datetime.now(um.tz),
                 'sub': user_id
             }
@@ -24,11 +24,11 @@ class Auth():
                 payload,
                 os.getenv('JWT_SECRET_KEY'),
                 'HS256'
-            ).decode("utf-8")
+            ).decode('utf-8')
         except Exception as e:
             return Response(
                 mimetype="application/json",
-                response=json.dumps({'error': 'error generating jwt token'}),
+                response=json.dumps({'error': 'error generating jwt token' +str(e)}),
                 status=400
             )
 

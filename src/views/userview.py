@@ -1,6 +1,5 @@
-#/src/views/UserView
-
-from flask import request, json, Response, Blueprint
+#/src/views/userview
+from flask import request, json, Response, Blueprint, jsonify
 from marshmallow import ValidationError
 from ..models.usermodel import UserModel, UserSchema
 from ..auth import Auth
@@ -50,7 +49,6 @@ def login():
     try:
         data = user_schema.load(req, partial=True) # Partial flag because name not needed
     except ValidationError as err:
-        print("Login() try statement failed")
         return custom_response(err, 400)
 
     if not data.get('email') or not data.get('password'):
@@ -58,7 +56,7 @@ def login():
 
     #Email is an alternate key that we use to query the DB from user inputs
     user = UserModel.get_user_by_email(data.get('email'))
-
+    print(user)
 
     if not user:
         return custom_response({'error': 'email does not exist!'}, 400)
@@ -67,9 +65,10 @@ def login():
         return custom_response({'error': 'invalid password!'}, 400)
 
     ser_data = user_schema.dump(user)
-
+    print(ser_data)
+    print("serialize succesful")
     token = Auth.generate_token(ser_data.get('id'))
-
+    print(token)
     return custom_response({'jwt_token': token}, 200)
 
 
