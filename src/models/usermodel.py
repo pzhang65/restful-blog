@@ -1,4 +1,4 @@
-# src/models/UserModel.py
+# src/models/usermodel.py
 from marshmallow import fields, Schema
 from pytz import timezone
 import datetime
@@ -17,6 +17,7 @@ class UserModel(db.Model):
     # nullable means something must be returned from POST
     # request will return none when returning that object doesn't exist
     name = db.Column(db.String(128), nullable=False)
+    #Candiate key but not chosen as primary therefore alternate key!
     email = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=True)
     created_at = db.Column(db.DateTime)
@@ -30,8 +31,8 @@ class UserModel(db.Model):
         self.name = data.get('name')
         self.email = data.get('email')
         self.password = self.__generate_hash(data.get('password')) # hash user password before storing to db
-        self.created_at = datetime.now(tz)
-        self.modified_at = datetime.now(tz)
+        self.created_at = datetime.datetime.now(self.tz)
+        self.modified_at = datetime.datetime.now(self.tz)
 
 
     def save(self):
@@ -50,6 +51,10 @@ class UserModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    """
+    All actual SQL queries are converted by SQLAlchemy, intialized in __init__.py
+    """
+
     @staticmethod
     def get_all_users():
         return UserModel.query.all()
@@ -57,6 +62,10 @@ class UserModel(db.Model):
     @staticmethod
     def get_one_user(id):
         return UserModel.query.get(id)
+
+    @staticmethod
+    def get_user_by_email(value):
+        return UserModel.query.filter_by(email=value).first()
 
     # private method to hash user password for storage in db
     def __generate_hash(self, password):
@@ -70,5 +79,12 @@ class UserModel(db.Model):
     def __repr__(self):
         return f'<id {self.id}>'
 
-    def __str__(self):
-        return f'User name: {self.name}, user ID: {self.id}, email: {user.email}'
+
+
+class UserSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+    email = fields.Email(required=True)
+    password = fields.Str(required=True, load_only=True)
+    created_at = fields.DateTime(dump_only=True)
+    modified_at = fields.DateTime(dump_only=True)
