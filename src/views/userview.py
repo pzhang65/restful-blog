@@ -1,5 +1,5 @@
 #/src/views/userview
-from flask import request, json, Response, Blueprint, jsonify
+from flask import request, json, Response, Blueprint, jsonify, g
 from marshmallow import ValidationError
 from ..models.usermodel import UserModel, UserSchema
 from ..auth import Auth
@@ -79,21 +79,21 @@ def get_a_user(user_id):
     if not user:
         return custom_response({'error': 'user not found'}, 404)
 
-    ser_user = user_schema.dump(user).data
+    ser_user = user_schema.dump(user)
     return custom_response(ser_user, 200)
 
 @user_api.route('/me', methods=['GET'])
 @Auth.auth_required
 def get_me():
     user = UserModel.get_one_user(g.user.get('id'))
-    ser_user = user_schema.dump(user).data
+    ser_user = user_schema.dump(user)
     return custom_response(ser_user, 200)
 
 @user_api.route('/me', methods=['PUT'])
 @Auth.auth_required
 def update():
-    req_data = request.get_json()
-    data, error = user_schema.load(req_data, partial=True)
+    req = request.get_json()
+    data, error = user_schema.load(req, partial=True)
     if error:
         return custom_response(error, 400)
 
