@@ -3,18 +3,18 @@
 Learning how to create a simple RESTful blog in Python with Flask.
 Starting with the back-end API only!
 
-Things I'll be exploring:
-* psycopg2
-* marshmallow
-
 Stack includes:
 * Python
 * PostgreSQL
 * pyjwt (user authentication)
+* Docker
 * and more to come after
 
-Things to learn after:
-* React.js to complete blog site.
+Things to come after:
+* React.js to flesh out front-end.
+
+
+
 
 Docker issues:
 Issue: Alpine base image missing a lot of base dependencies to install my Flask project dependencies.
