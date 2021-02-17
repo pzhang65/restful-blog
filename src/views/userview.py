@@ -16,7 +16,6 @@ def create():
     try:
         data = user_schema.load(req)
     except ValidationError as err:
-        print("Create() try statement failed")
         return custom_response(err, 400)
 
     # check if user already exist in the db
