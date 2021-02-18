@@ -1,12 +1,12 @@
 # Simple RESTful blog
 
-Learning how to create a simple RESTful blog in Python with Flask.
+Learning how to create a proper RESTful blog with all CRUD operations, authentication and data persistence in Python with Flask.
 Starting with the back-end API only!
 
 Stack includes:
 * Python
 * PostgreSQL
-* pyjwt (user authentication)
+* pyjwt
 * Docker
 * and more to come after
 
