@@ -31,6 +31,7 @@ def get_all():
     posts = BlogpostModel.get_all_blogposts()
     data = posts_schema.dump(posts, many=True)
     return custom_response(data, 200)
+
     
 
 
