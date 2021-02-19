@@ -63,16 +63,14 @@ def login():
         return custom_response({'error': 'invalid password!'}, 400)
 
     ser_data = user_schema.dump(user)
-    print(ser_data)
-    print("serialize succesful")
     token = Auth.generate_token(ser_data.get('id'))
-    print(token)
     return custom_response({'jwt_token': token}, 200)
 
 
 @user_api.route('/<int:user_id>', methods=['GET'])
 @Auth.auth_required
 def get_a_user(user_id):
+    # retrieve user based on the user id in the same request context
     user = UserModel.get_one_user(user_id)
     if not user:
         return custom_response({'error': 'user not found'}, 404)
@@ -83,6 +81,7 @@ def get_a_user(user_id):
 @user_api.route('/me', methods=['GET'])
 @Auth.auth_required
 def get_me():
+    # retrieve user based on the user id in the same request context
     user = UserModel.get_one_user(g.user.get('id'))
     ser_user = user_schema.dump(user)
     return custom_response(ser_user, 200)
@@ -91,13 +90,22 @@ def get_me():
 @Auth.auth_required
 def update():
     req = request.get_json()
-    data, error = user_schema.load(req, partial=True)
-    if error:
-        return custom_response(error, 400)
+    try:
+        data = user_schema.load(req, partial=True)
+    except ValidationError as err:
+        return custom_response(error, 200)
+
+    # retrieve user based on the user id in the same request context
+    user = UserModel.get_one_user(g.user.get('id'))
+    user.update(data)
+    ser_user = user_schema.dump(user)
+    return custom_response(ser_user, 200)
+
 
 @user_api.route('/me', methods=['DELETE'])
 @Auth.auth_required
 def delete():
+    # retrieve user based on the user id in the same request context
     user = UserModel.get_one_user(g.user.get('id'))
     user.delete()
     return custom_response({'message': 'deleted'}, 204)
