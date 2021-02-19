@@ -55,7 +55,6 @@ def login():
 
     #Email is an alternate key that we use to query the DB from user inputs
     user = UserModel.get_user_by_email(data.get('email'))
-    print(user)
 
     if not user:
         return custom_response({'error': 'email does not exist!'}, 400)
