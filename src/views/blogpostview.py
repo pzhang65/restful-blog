@@ -9,7 +9,7 @@ from ..auth import Auth
 posts_api = Blueprint('posts', __name__)
 posts_schema = BlogpostSchema
 
-@posts_api.route('/', methods=['POST')
+@posts_api.route('/', methods=['POST'])
 @Auth.auth_required
 def create():
     req = request.get_json()
@@ -36,7 +36,7 @@ def get_all():
     data = posts_schema.dump(posts, many=True)
     return custom_response(data, 200)
 
-@post_api.route('/<int:blogpost_id>', methods=['GET'])
+@posts_api.route('/<int:blogpost_id>', methods=['GET'])
 def get_one(blogpost_id):
     posts = BlogpostModel.get_one_bologpost(blogpost_id)
     if not posts:
@@ -44,7 +44,7 @@ def get_one(blogpost_id):
     data = posts_schema.dump(posts)
     return custom_response(data, 200)
 
-@post_api.route('/<int:owner_id>', methods=['GET'])
+@posts_api.route('/<int:owner_id>', methods=['GET'])
 def get_all_owners(owner_id):
     user = UserModel.get_one_user(owner_id)
     if not users:
@@ -57,7 +57,7 @@ def get_all_owners(owner_id):
     data = posts_schema.dump(posts, many=True)
     return custom_response(data, 200)
 
-@post_api.route('/<int:blogpost_id>', methods=['PUT'])
+@posts_api.route('/<int:blogpost_id>', methods=['PUT'])
 @Auth.auth_required
 def update(blogpost_id):
     req = request.get_json()
@@ -80,7 +80,7 @@ def update(blogpost_id):
     data = blogpost_schema.dump(posts) # serialize again
     return custom_response({'message': 'post updated!'}, 200)
 
-@blogpost_api.route('/<int:blogpost_id>', methods=['DELETE'])
+@posts_api.route('/<int:blogpost_id>', methods=['DELETE'])
 @Auth.auth_required
 def delete(blogpost_id):
     posts = BlogpostModel.get_one_blogpost(blogpost_id)
