@@ -6,6 +6,7 @@
 ### Features
 - [ ] Develop front-end using React.js
 - [ ] Deploy docker container
+- [ ] to run instructions
 
 ### Completed Column ✓
 - [x] Create TODO.md
