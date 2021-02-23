@@ -38,7 +38,7 @@ def create():
 @Auth.auth_required
 def get_all():
     users = UserModel.get_all_users()
-    ser_users = user_schema.dump(users, many=True).data
+    ser_users = user_schema.dump(users, many=True)
     return custom_response(ser_users, 200)
 
 @user_api.route('/login', methods=['POST'])
@@ -59,7 +59,13 @@ def login():
     if not user:
         return custom_response({'error': 'email does not exist!'}, 400)
 
-    if not user.check_hash(data.get('password')):
+    # Check to see if password was properly hashed first
+    try:
+        password = user.check_hash(data.get('password'))
+    except ValueError as err:
+        return custom_response({'error': 'Stored password was not hashed properly!'}, 400)
+
+    if not password:
         return custom_response({'error': 'invalid password!'}, 400)
 
     ser_data = user_schema.dump(user)
@@ -108,7 +114,7 @@ def delete():
     # retrieve user based on the user id in the same request context
     user = UserModel.get_one_user(g.user.get('id'))
     user.delete()
-    return custom_response({'message': 'deleted'}, 204)
+    return custom_response({'message': 'user successfully deleted'}, 200)
 
 def custom_response(res, status_code):
 
