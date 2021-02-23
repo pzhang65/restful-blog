@@ -41,9 +41,10 @@ class UserModel(db.Model):
     def update(self, data):
         for key, item in data.items():
             if key == 'password': # if users wants to update password
-                self.password = self.__generate_hash(value) # hash new password
-            setattr(self, key, item)
-        self.modified_at = datetime.now(tz)
+                self.password = self.__generate_hash(item) #hash new password
+            else: # Simple settattr() for all other attributes
+                setattr(self, key, item)
+        self.modified_at = datetime.datetime.now(self.tz)
         db.session.commit()
 
     def delete(self):
@@ -82,6 +83,6 @@ class UserSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
     email = fields.Email(required=True)
-    password = fields.Str(required=True, load_only=True)
+    password = fields.Str(required=True, load_only=True) #write-only field
     created_at = fields.DateTime(dump_only=True)
     modified_at = fields.DateTime(dump_only=True)
