@@ -21,6 +21,6 @@ def create_app(env_name):
 
     @app.route('/', methods=['GET'])
     def index():
-        return 'End point working!!'
+        return 'End point working!!', 200
 
     return app
