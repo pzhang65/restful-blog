@@ -41,6 +41,17 @@ def get_all():
     ser_users = user_schema.dump(users, many=True)
     return custom_response(ser_users, 200)
 
+@user_api.route('/<int:user_id>', methods=['GET'])
+@Auth.auth_required
+def get_a_user(user_id):
+    # retrieve user based on the user id in the same request context
+    user = UserModel.get_one_user(user_id)
+    if not user:
+        return custom_response({'error': 'user not found'}, 404)
+
+    ser_user = user_schema.dump(user)
+    return custom_response(ser_user, 200)
+
 @user_api.route('/login', methods=['POST'])
 def login():
     req = request.get_json()
@@ -72,18 +83,6 @@ def login():
     token = Auth.generate_token(ser_data.get('id'))
     return custom_response({'jwt_token': token}, 200)
 
-
-@user_api.route('/<int:user_id>', methods=['GET'])
-@Auth.auth_required
-def get_a_user(user_id):
-    # retrieve user based on the user id in the same request context
-    user = UserModel.get_one_user(user_id)
-    if not user:
-        return custom_response({'error': 'user not found'}, 404)
-
-    ser_user = user_schema.dump(user)
-    return custom_response(ser_user, 200)
-
 @user_api.route('/me', methods=['GET'])
 @Auth.auth_required
 def get_me():
@@ -99,7 +98,7 @@ def update():
     try:
         data = user_schema.load(req, partial=True)
     except ValidationError as err:
-        return custom_response(error, 200)
+        return custom_response(error, 400)
 
     # retrieve user based on the user id in the same request context
     user = UserModel.get_one_user(g.user.get('id'))
