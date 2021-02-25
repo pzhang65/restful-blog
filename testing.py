@@ -24,19 +24,47 @@ class UserTestCases(unittest.TestCase):
     def test_201_create(self):
         res = self.client().post(route_2, json=
                     {'name': 'tester', 'email': 'testing11@gmail.com', 'password': 'abc123'})
+        received = json.loads(res.data)
+        self.assertTrue(received.get('jwt_token'))
         self.assertEqual(res.status_code, 201)
 
     def test_400_create_duplicate(self):
-        pass
+        res = self.client().post(route_2, json=
+                    {'name': 'tester', 'email': 'testing11@gmail.com', 'password': 'abc123'})
+        received = json.loads(res.data)
+        self.assertTrue(received.get('jwt_token'))
+        self.assertEqual(res.status_code, 201)
+        res = self.client().post(route_2, json=
+                    {'name': 'tester', 'email': 'testing11@gmail.com', 'password': 'abc123'})
+        received = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue(received.get('error'))
 
     def test_400_create_empty(self):
-        pass
+        res = self.client().post(route_2, json={})
+        received = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue(received.get('error'))
 
     def test_200_get_all(self):
-        pass
+        res = self.client().post(route_2, json=
+                    {'name': 'tester', 'email': 'testing11@gmail.com', 'password': 'abc123'})
+        received = json.loads(res.data)
+        api_token = received.get('jwt_token')
+        res = self.client().get(route_2, headers={'Content-Type': 'application/json', 'api-token': api_token})
+        self.assertEqual(res.status_code, 200)
+
+    def test_400_invalid_token(self):
+        res = self.client().get(route_2, headers={'Content-Type': 'application/json', 'api-token': ''})
+        received = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue(received.get('error'))
 
     def test_400_unauthorized(self):
-        pass
+        res = self.client().get(route_2)
+        received = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue(received.get('error'))
 
     def test_200_get_a_user(self):
         pass

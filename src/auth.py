@@ -39,11 +39,11 @@ class Auth():
             payload = jwt.decode(token, os.getenv('JWT_SECRET_KEY'))
             re['data'] = {'user_id': payload['sub']}
             return re
-        except jwt.ExpiredSignatureError as e1:
-            re['error'] = {'message': 'token expired, please login again'}
+        except jwt.ExpiredSignatureError:
+            re['error'] = {'error': 'token expired, please login again'}
             return re
         except jwt.InvalidTokenError:
-            re['error'] = {'message': 'Invalid token, please try again'}
+            re['error'] = {'error': 'Invalid token, please try again'}
             return re
 
     # decorator

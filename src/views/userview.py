@@ -16,7 +16,11 @@ def create():
     try:
         data = user_schema.load(req)
     except ValidationError as err:
-        return custom_response(err, 400)
+        missing_fields = ''
+        # Get message attribute from validationerror object and
+        for field in err.messages:
+            missing_fields += f'{field}, ' # concatenate returned fields
+        return custom_response({'error': f'Error! {missing_fields}missing!'}, 400)
 
     # check if user already exist in the db
     user_in_db = UserModel.get_user_by_email(data.get('email'))
