@@ -102,7 +102,11 @@ def update():
     try:
         data = user_schema.load(req, partial=True)
     except ValidationError as err:
-        return custom_response(error, 400)
+        invalid_fields = ''
+        # Get message attribute to serialize to JSON
+        for field in err.messages:
+            invalid_fields += f'{field}, ' # concatenate returned fields
+        return custom_response({'error': f'Error! Fields: {invalid_fields} are invalid!'}, 400)
 
     # retrieve user based on the user id in the same request context
     user = UserModel.get_one_user(g.user.get('id'))
@@ -120,7 +124,6 @@ def delete():
     return custom_response({'message': 'user successfully deleted'}, 200)
 
 def custom_response(res, status_code):
-
     # Flask default response object configured to return a JSON object
     return Response(
         mimetype="application/json",
