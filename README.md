@@ -14,4 +14,4 @@ Starting with the back-end API only!
 * React.js to flesh out front-end.
 
 ### To run:
-* will be deployed soon
+- will be deployed soon
